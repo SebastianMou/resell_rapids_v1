@@ -1,0 +1,246 @@
+{% extends '../base.html' %}
+{% load static %}
+
+{% block content %}
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<!-- Load the htmx library -->
+<script src="https://unpkg.com/htmx.org@1.9.4" integrity="sha384-zUfuhFKKZCbHTY6aRR46gxiqszMk5tcHjsVFxnUo8VMus4kHGVdIYVbOYYNlKmHV" crossorigin="anonymous"></script>
+
+<!-- Load the Sortable library -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Sortable/1.14.0/Sortable.min.js"></script>
+
+<style>
+    .full-height {
+        height: 100vh;
+    }
+    #not_started_body, #in_progress_body, #COMPLETED_body {
+        border: solid 2px gray;
+        border-radius: 12px;
+        margin-bottom: 20px; /* Vertical spacing between columns */
+        background-color: white;
+    }
+    #not_started_body, #in_progress_body, #COMPLETED_body {
+        margin-right: 20px;
+    }
+    #not_started, #in_progress, #COMPLETED {
+        height: 40vh;
+
+    }
+</style>
+<div class="container-fluid full-height">
+    <div style="display: flex; justify-content: space-between; align-items: center;">
+        <h2>Tasks - ({{ task_count }})</h2>
+        <a href="{% url 'create_task' %}" class="btn btn-info">
+            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="currentColor" class="bi bi-plus-lg" viewBox="0 0 16 16">
+                <path fill-rule="evenodd" d="M8 2a.5.5 0 0 1 .5.5v5h5a.5.5 0 0 1 0 1h-5v5a.5.5 0 0 1-1 0v-5h-5a.5.5 0 0 1 0-1h5v-5A.5.5 0 0 1 8 2Z"/>
+              </svg>
+        </a>
+    </div>
+    
+    <hr>
+    <div class="row">
+        <div class="col-6 col-sm-3" >
+            <div class="card">
+                <div class="card-body" style="text-align: center;">
+                    <button class="btn btn-info btn-sm">Pomodoro</button>
+                    <button class="btn btn-info btn-sm">Short Break</button>
+                    <button class="btn btn-info btn-sm">Long Break</button>
+                    <h1 style="color: rgba(255, 0, 0, 0.589);">25:00</h1>
+                    <button class="btn btn-danger form-control">Start</button>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col">
+            <div class="card">
+                <div class="card-body">
+                    <div class="task-detail">
+                        <div class="spinner-grow text-primary" role="status">
+                        </div>
+                        <div class="spinner-grow text-secondary" role="status">
+                        </div> 
+                        <div class="spinner-grow text-success" role="status">
+                        </div>
+                    </div>                                  
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="message"></div>
+    <form class="sortable" hx-post="/items/" hx-trigger="end" hx-target="#message">
+        {% csrf_token %}
+        <div class="htmx-indicator">Updating...</div>
+
+        <div class="d-flex">
+
+            <!-- NOT_STARTED -->
+            <div id="not_started_body" class="card-body">
+                <h4>Not Started</h4>
+                <!-- <h4>Not Started ({{ status_counts.NOT_STARTED }})</h4> -->
+                <hr>
+                <div id="not_started" class="status-list card-body" data-status="NOT_STARTED">
+                    {% for task in tasks %}
+                        {% if task.status == "NOT_STARTED" %}
+                        <div class="card mb-2 task-item" data-id="{{ task.id }}">
+                            <a href="javascript:void(0);" class="task-link" data-url="{% url 'items_detail' task.pk %}">
+                                <div class="card-body">
+                                    <input style="height: 40vh;" type='hidden' name='item' value='{{ task.id }}' />
+                                    <input type='hidden' name='status' value='{{ task.status }}' />
+                                    <b>
+                                        {% if task.title|length > 35 %}
+                                            {{ task.title|slice:"0:35" }}...
+                                        {% else %}
+                                            {{ task.title }}
+                                        {% endif %}
+                                    </b>
+                                </div>
+                            </a>
+                        </div>
+                        {% endif %}
+                    {% endfor %}
+                </div>
+            </div>
+    
+            <!-- IN_PROGRESS -->
+            <div id="in_progress_body" class="card-body">
+                <h4>In Progress</h4>
+                <!-- <h4>In Progress ({{ status_counts.IN_PROGRESS }})</h4> -->
+                <hr>
+                <div id="in_progress" class="status-list card-body" data-status="IN_PROGRESS">
+                
+                    {% for task in tasks %}
+                        {% if task.status == "IN_PROGRESS" %}
+                        <div class="card mb-3 task-item" data-id="{{ task.id }}">
+                            <a href="javascript:void(0);" class="task-link" data-url="{% url 'items_detail' task.pk %}">
+                                <div class="card-body">
+                                    <input style="height: 40vh;" type='hidden' name='item' value='{{ task.id }}' />
+                                    <input type='hidden' name='status' value='{{ task.status }}' />
+                                    <b>
+                                        {% if task.title|length > 35 %}
+                                            {{ task.title|slice:"0:35" }}...
+                                        {% else %}
+                                            {{ task.title }}
+                                        {% endif %}
+                                    </b>
+                                </div>
+                            </a>
+                        </div>
+                        {% endif %}
+                    {% endfor %}
+                </div>
+            </div>
+
+            <!-- COMPLETED -->
+            <div id='COMPLETED_body' class="card-body">
+                <h4>Completed</h4>
+                <!-- <h4>Completed ({{ status_counts.COMPLETED }})</h4> -->
+                <hr>
+                <div id="COMPLETED" class="status-list card-body" data-status="COMPLETED">
+                    {% for task in tasks %}
+                        {% if task.status == "COMPLETED" %}
+                        <div class="card mb-3 task-item" data-id="{{ task.id }}">
+                            <a href="javascript:void(0);" class="task-link" data-url="{% url 'items_detail' task.pk %}">
+                                <div class="card-body">
+                                    <input style="height: 40vh;" type='hidden' name='item' value='{{ task.id }}' />
+                                    <input type='hidden' name='status' value='{{ task.status }}' />
+                                    <b>
+                                        {% if task.title|length > 35 %}
+                                            {{ task.title|slice:"0:35" }}...
+                                        {% else %}
+                                            {{ task.title }}
+                                        {% endif %}
+                                    </b>
+                                </div>
+                            </a>
+                        </div>
+                        {% endif %}
+                    {% endfor %}
+                </div>
+            </div>
+            
+        </div>
+    </form>
+</div>
+
+<script>
+    $(document).ready(function(){
+        $(".task-link").click(function(event){
+            event.preventDefault();  // prevent the default action
+            var detailUrl = $(this).data('url'); // Get the URL from the data attribute
+            $.ajax({
+                url: detailUrl,
+                success: function(result){
+                    $(".task-detail").html(result);
+                },
+                error: function(jqXHR, textStatus, errorThrown) {
+                    console.error("Error:", textStatus, errorThrown); // Print the error to the console
+                }
+            });
+        });
+    });
+    // This function is triggered when the page loads or when new content is loaded by htmx.
+    htmx.onLoad(function (content) {
+
+        // Select all elements with the class "status-list". These are the lists of tasks.
+        var sortables = content.querySelectorAll(".status-list");
+
+        // Loop through each status list.
+        for (var i = 0; i < sortables.length; i++) {
+
+            // Initialize the Sortable library on each status list.
+            new Sortable(sortables[i], {
+
+                // Group name for shared lists. This allows tasks to be dragged between different status lists.
+                group: 'shared',
+
+                // Duration of the drag-and-drop animation in milliseconds.
+                animation: 150,
+
+                // CSS class applied to the dragged item while it's being moved.
+                ghostClass: 'blue-background-class',
+
+                // Event triggered when an item is moved within the same list.
+                onUpdate: function (evt) {
+
+                    // Get the status of the list the task was moved to.
+                    var newStatus = evt.to.getAttribute('data-status');
+
+                    // Find the hidden input field for the task's status.
+                    var statusInput = evt.item.querySelector('input[name="status"]');
+
+                    // Update the task's status input field with the new status.
+                    statusInput.value = newStatus;
+
+                    // Log the updated status for debugging purposes.
+                    console.log("onUpdate - Updated status:", newStatus);
+
+                    // Trigger the hx-post request to send the updated order and status to the server.
+                    htmx.trigger(evt.item, 'htmx:send');
+                },
+
+                // Event triggered when an item is moved to a different list.
+                onAdd: function (evt) {
+
+                    // Get the status of the list the task was moved to.
+                    var newStatus = evt.to.getAttribute('data-status');
+
+                    // Find the hidden input field for the task's status.
+                    var statusInput = evt.item.querySelector('input[name="status"]');
+
+                    // Update the task's status input field with the new status.
+                    statusInput.value = newStatus;
+
+                    // Log the updated status for debugging purposes.
+                    console.log("onAdd - Updated status:", newStatus);
+
+                    // Trigger the hx-post request to send the updated order and status to the server.
+                    htmx.trigger(evt.item, 'htmx:send');
+                }
+            });
+        }
+    });
+</script>
+
+{% endblock %}

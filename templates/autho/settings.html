@@ -1,0 +1,110 @@
+{% extends '../base.html' %}
+{% load static %}
+
+{% block content %}
+<style>
+    .full-height {
+        height: 100vh;
+    }
+    .full-height > .col, .full-height > .col > .card {
+        height: 100%;
+    }
+</style>
+<div class="container-fluid full-height">
+  <div style="border: solid 2px gray;" class="card">
+    <div class="card-body">
+      <div class="row">
+        <div class="col col-lg-2">
+          <h3>Resell-Rapids</h3>
+          <table class="table">
+            <tbody>
+              <tr>
+                <td><a href="{% url 'settings' %}" id="dashboard-link">Dashboard</a></td>
+              </tr>
+              <tr>
+                <td><a onclick="loadTermsOfService(event)" href="{% url 'terms_of_service' %}" id="terms-link">Terms of service</a></td>
+              </tr>
+              <tr>
+                <td>
+                  <a onclick="loadEmailService(event)" href="{% url 'email_service' %}" id="email-link">What can we better?</a>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="col">
+          <h4>Dashboard</h4>
+          <hr>
+          {% if messages %}
+            {% for message in messages %}
+                <div class="message">
+                    <div class="alert alert-success">
+                        <strong>Success!</strong> {{ message }}
+                    </div>
+                </div>
+            {% endfor %}
+          {% endif %}
+          <form method="POST">
+              {% csrf_token %}
+              {{ u_form.as_p }}
+              <button class="btn btn-info form-control" type="submit">Update</button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<script>
+  /**
+ * Load the Terms of Service content using AJAX.
+ * 
+ * @param {Event} event - The event object associated with the click on the anchor tag.
+ */
+function loadTermsOfService(event) {
+    
+    // Prevent the default action of the anchor tag, which is navigating to the href URL.
+    event.preventDefault();
+    
+    // Make an AJAX request using jQuery.
+    $.ajax({
+        
+        // The URL endpoint to fetch the Terms of Service content.
+        url: `/terms_of_service/`,
+        
+        // The HTTP method for the request.
+        type: 'GET',
+        
+        // Callback function to handle a successful AJAX request.
+        success: function(response) {
+            
+            // Replace the content of the second column (0-indexed) with the response from the server.
+            $('.col').eq(1).html(response);
+        },
+        
+        // Callback function to handle an error in the AJAX request.
+        error: function(error) {
+            
+            // Log the error to the console for debugging purposes.
+            console.error("Error fetching terms:", error);
+        }
+    });
+}
+
+  function loadEmailService(eventEmail) {
+    eventEmail.preventDefault(); // Prevent the default action of the anchor tag
+      $.ajax({
+          url: `/email_service/`,
+          type: 'GET',
+          success: function(response) {
+              $('.col').eq(1).html(response);
+          },
+          error: function(error) {
+              console.error("Error fetching terms:", error);
+          }
+      });
+  }
+</script>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  
+
+{% endblock %}

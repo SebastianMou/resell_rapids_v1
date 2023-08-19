@@ -1,0 +1,37 @@
+{% extends '../base.html' %}
+{% load static %}
+
+{% block content %}
+<!-- Include CSS files -->
+<link href="{% static 'froala_editor/css/froala_editor.pkgd.min.css' %}" rel="stylesheet" type="text/css" />
+
+<!-- Include JS files -->
+<script type="text/javascript" src="{% static 'froala_editor/js/froala_editor.pkgd.min.js' %}"></script>
+<style>
+    .full-height {
+        height: 100vh;
+    }
+</style>
+<div class="container-fluid full-height">
+    <div class="row">
+        <div style="border: solid 2px red;" class="col">
+
+        </div>
+        <div style="border: solid 2px red;" class="col-8">
+            <h1>Create task</h1>
+            <form method="POST">
+                {% csrf_token %}
+                {{ form_task.title }}
+                <br>
+                {{ form_task.description }}
+                <br>
+                <input class="btn btn-info form-control" type="submit" value="save">
+            </form>
+        </div>
+        <div style="border: solid 2px red;" class="col">
+
+        </div>
+    </div>
+    
+</div>
+{% endblock %}

@@ -1,0 +1,12 @@
+{% extends './base.html' %}
+{% load static %}
+
+{% block content %}
+<!-- Begin Page Content -->
+<div class="container-fluid">
+    <h1 class="h3 mb-2 text-gray-800">Amazon Analytics</h1>
+    {% for product in product_names %}
+        <h5>{{ product }}</h5>
+    {% endfor %}
+</div>
+{% endblock %}

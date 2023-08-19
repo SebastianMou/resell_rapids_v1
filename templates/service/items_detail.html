@@ -1,0 +1,9 @@
+
+<h5 style="color: black;">{{ task.title }}</h5>
+<p>{{ task.description|safe }}</p>
+
+<div style="display: flex; justify-content: space-between; align-items: center;">
+    <small>Created: {{ task.created_at }}</small>
+    <small>Updated: {{ task.updated_at }}</small>
+</div>
+
