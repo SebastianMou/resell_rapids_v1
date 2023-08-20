@@ -1,0 +1,25 @@
+{}{% extends '../base.html' %}
+{% load static %}
+
+{% block content %}
+<style>
+    .full-height {
+        height: 60vh;
+    }
+</style>
+<div class="container full-height">
+    <div class="card">
+        <div class="card-body">
+            <form method="post">
+                {% csrf_token %}
+                <h1>Are you sure you want to delete the task "{{ task.title }}"?</h1>
+                <input type="submit" value="Yes, Delete" class="btn btn-danger">
+                <a href="{% url 'tasks' %}" class="btn btn-secondary">Cancel</a>
+            </form>
+        </div>
+    </div>
+    
+</div>
+
+
+{% endblock %}

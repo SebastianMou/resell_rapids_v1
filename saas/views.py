@@ -239,6 +239,7 @@ def items_detail(request, pk):
         'task': task,
     }
     return render(request, 'service/items_detail.html', context)
+
 @login_required
 def create_task(request):
     if request.method == 'POST':
@@ -255,6 +256,33 @@ def create_task(request):
         'form_task': form_task,
     }
     return render(request, 'service/create_task.html', context)
+
+@login_required
+def delete_task(request, pk):
+    task = get_object_or_404(Task, id=pk, owner=request.user)  # Ensure the task belongs to the logged-in user
+    if request.method == 'POST':  # Confirm the task deletion with a POST request
+        task.delete()
+        return redirect('tasks')  # Redirect to the tasks view after deletion
+    context = {
+        'task': task,
+    }
+    return render(request, 'service/confirm_delete.html', context)
+
+@login_required
+def edit_task(request, pk):
+    task = get_object_or_404(Task, id=pk, owner=request.user)  # Ensure the task belongs to the logged-in user
+    if request.method == 'POST':
+        form = TaskForm(request.POST, instance=task)  # Bind the form with POST data and the task instance
+        if form.is_valid():
+            form.save()
+            return redirect('items_detail', pk=task.pk)  # Redirect to the task detail view after editing
+    else:
+        form = TaskForm(instance=task)  # Create a form bound to the task instance
+    context = {
+        'form': form,
+        'task': task,
+    }
+    return render(request, 'service/edit_task.html', context)
 
 def settings(request):
     if request.method == 'POST':

@@ -149,14 +149,6 @@ EMAIL_USE_TLS = True
 
 PASSWORD_RESET_TIMEOUT = 14400
 
-# EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-# EMAIL_HOST = 'smtpout.secureserver.net'
-# EMAIL_HOST_USER = 'contact@resellrapids.com'
-# EMAIL_HOST_PASSWORD = 'Seb_v1_2022_wroomie$$'
-# EMAIL_PORT = 587
-# EMAIL_USE_TLS = True
-
-# PASSWORD_RESET_TIMEOUT = 14400
 
 # Stripe
 STRIPE_PUBLIC_KEY = ''

@@ -1,0 +1,23 @@
+{% extends '../base.html' %}
+{% load static %}
+
+{% block content %}
+<style>
+    .full-height {
+        height: 100vh;
+    }
+</style>
+<div class="container-fluid full-height">
+    <h1>Edit task</h1>
+    <form method="post">
+        {% csrf_token %}
+        {{ form.title }}
+        <br>
+        {{ form.description }}
+        <br>
+        <input type="submit" value="Save Changes" class="btn btn-primary">
+        <a href="{% url 'items_detail' task.pk %}" class="btn btn-secondary">Cancel</a>
+    </form>
+    
+</div>
+{% endblock %}
