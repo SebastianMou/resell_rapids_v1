@@ -24,8 +24,7 @@
         margin-right: 20px;
     }
     #not_started, #in_progress, #COMPLETED {
-        height: 40vh;
-
+        height: 56vh;
     }
 </style>
 <div class="container-fluid full-height">
@@ -48,8 +47,12 @@
                     <button class="btn btn-info btn-sm">Long Break</button> -->
                     <h1 id="timer" style="color: rgba(255, 0, 0, 0.589);">25:00</h1>
                     <div class="d-flex">
+                        <audio id="clickSound" src="{% static 'audio/button-click.mp3' %}" preload="auto"></audio>
+
                         <button onclick="startCountdown()" class="btn btn-success form-control">Start</button>
-                        <button onclick="pauseCountdown()" class="btn btn-danger form-control">Pause</button>
+                        <audio id="clickSound" src="{% static 'audio/button-click.mp3' %}" preload="auto"></audio>
+                        <button id="toggleButton" onclick="pauseCountdown()" class="btn btn-danger form-control">Pause</button>
+                        <audio id="bellSound" src="{% static 'audio/bell-ring.mp3' %}"></audio>
                     </div>
                 </div>
             </div>
@@ -90,13 +93,13 @@
                 </div>
                 <!-- <h4>Not Started ({{ status_counts.NOT_STARTED }})</h4> -->
                 <hr>
-                <div id="not_started" class="status-list card-body" data-status="NOT_STARTED">
+                <div id="not_started" class="status-list card-body overflow-auto" data-status="NOT_STARTED">
                     {% for task in tasks %}
                         {% if task.status == "NOT_STARTED" %}
                         <div class="card mb-2 task-item" data-id="{{ task.id }}">
                             <a href="javascript:void(0);" class="task-link" data-url="{% url 'items_detail' task.pk %}">
                                 <div class="card-body">
-                                    <input style="height: 40vh;" type='hidden' name='item' value='{{ task.id }}' />
+                                    <input type='hidden' name='item' value='{{ task.id }}' />
                                     <input type='hidden' name='status' value='{{ task.status }}' />
                                     <b>
                                         {% if task.title|length > 35 %}
@@ -124,14 +127,13 @@
                 </div>
                 <!-- <h4>In Progress ({{ status_counts.IN_PROGRESS }})</h4> -->
                 <hr>
-                <div id="in_progress" class="status-list card-body" data-status="IN_PROGRESS">
-                
+                <div id="in_progress" class="status-list card-body overflow-auto" data-status="IN_PROGRESS">
                     {% for task in tasks %}
                         {% if task.status == "IN_PROGRESS" %}
                         <div class="card mb-3 task-item" data-id="{{ task.id }}">
                             <a href="javascript:void(0);" class="task-link" data-url="{% url 'items_detail' task.pk %}">
                                 <div class="card-body">
-                                    <input style="height: 40vh;" type='hidden' name='item' value='{{ task.id }}' />
+                                    <input type='hidden' name='item' value='{{ task.id }}' />
                                     <input type='hidden' name='status' value='{{ task.status }}' />
                                     <b>
                                         {% if task.title|length > 35 %}
@@ -160,13 +162,13 @@
                 
                 <!-- <h4>Completed ({{ status_counts.COMPLETED }})</h4> -->
                 <hr>
-                <div id="COMPLETED" class="status-list card-body" data-status="COMPLETED">
+                <div id="COMPLETED" class="status-list card-body overflow-auto" data-status="COMPLETED">
                     {% for task in tasks %}
                         {% if task.status == "COMPLETED" %}
                         <div class="card mb-3 task-item" data-id="{{ task.id }}">
                             <a href="javascript:void(0);" class="task-link" data-url="{% url 'items_detail' task.pk %}">
                                 <div class="card-body">
-                                    <input style="height: 40vh;" type='hidden' name='item' value='{{ task.id }}' />
+                                    <input type='hidden' name='item' value='{{ task.id }}' />
                                     <input type='hidden' name='status' value='{{ task.status }}' />
                                     <b>
                                         {% if task.title|length > 35 %}
@@ -299,6 +301,8 @@
 
             if (timeLeft <= 0) {
                 clearInterval(countdown);
+                // Play the bell sound
+                document.getElementById('bellSound').play();
                 alert('Time is up!');
             }
         }, 1000);
@@ -306,10 +310,22 @@
 
     function pauseCountdown() {
         isPaused = !isPaused;
+
+        var sound = document.getElementById("clickSound");
+        var button = document.getElementById("toggleButton");
+
+        sound.play(); // Play the sound effect
+
+        if (button.innerHTML === "Pause") {
+            button.innerHTML = "Unpause";
+        } else {
+            button.innerHTML = "Pause";
+        }
     }
 
-
-
+    function startButton() {
+        
+    }
 </script>
 
 {% endblock %}
