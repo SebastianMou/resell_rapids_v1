@@ -2,22 +2,42 @@
 {% load static %}
 
 {% block content %}
+<!-- Include CSS files -->
+<link href="{% static 'froala_editor/css/froala_editor.pkgd.min.css' %}" rel="stylesheet" type="text/css" />
+
+<!-- Include JS files -->
+<script type="text/javascript" src="{% static 'froala_editor/js/froala_editor.pkgd.min.js' %}"></script>
 <style>
     .full-height {
         height: 100vh;
     }
 </style>
 <div class="container-fluid full-height">
-    <h1>Edit task</h1>
-    <form method="post">
-        {% csrf_token %}
-        {{ form.title }}
-        <br>
-        {{ form.description }}
-        <br>
-        <input type="submit" value="Save Changes" class="btn btn-primary">
-        <a href="{% url 'items_detail' task.pk %}" class="btn btn-secondary">Cancel</a>
-    </form>
+    <div class="row">
+        <div class="col">
+            <div class="card-body">
+
+            </div>
+        </div>
+        <div class="col-8">
+            <h1>Edit task</h1>
+            <form method="post">
+                {% csrf_token %}
+                {{ form.title }}
+                <br>
+                {{ form.description }}
+                <br>
+                <input type="submit" value="Save Changes" class="btn btn-primary">
+                <a href="{% url 'tasks' %}" class="btn btn-secondary">Cancel</a>
+            </form>
+        </div>
+        <div class="col">
+            <div class="card-body">
+
+            </div>
+        </div>
+    </div>
+   
     
 </div>
 {% endblock %}

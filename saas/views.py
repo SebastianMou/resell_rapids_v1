@@ -172,6 +172,7 @@ async def a_analytics(request):
         await browser.close()
     return await sync_to_async(render)(request, 'a_analytics.html', context)
 
+@login_required
 def profile(request):
     return render(request, 'autho/profile.html')
 
@@ -272,12 +273,12 @@ def delete_task(request, pk):
 def edit_task(request, pk):
     task = get_object_or_404(Task, id=pk, owner=request.user)  # Ensure the task belongs to the logged-in user
     if request.method == 'POST':
-        form = TaskForm(request.POST, instance=task)  # Bind the form with POST data and the task instance
+        form = TaskForm(request.POST, instance=task)
         if form.is_valid():
             form.save()
-            return redirect('items_detail', pk=task.pk)  # Redirect to the task detail view after editing
+            return redirect('tasks')  
     else:
-        form = TaskForm(instance=task)  # Create a form bound to the task instance
+        form = TaskForm(instance=task) 
     context = {
         'form': form,
         'task': task,

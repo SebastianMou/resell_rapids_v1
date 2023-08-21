@@ -14,10 +14,12 @@
 </style>
 <div class="container-fluid full-height">
     <div class="row">
-        <div style="border: solid 2px red;" class="col">
+        <div class="col">
+            <div class="card-body">
 
+            </div>
         </div>
-        <div style="border: solid 2px red;" class="col-8">
+        <div class="col-8">
             <h1>Create task</h1>
             <form method="POST">
                 {% csrf_token %}
@@ -25,11 +27,14 @@
                 <br>
                 {{ form_task.description }}
                 <br>
-                <input class="btn btn-info form-control" type="submit" value="save">
+                <input type="submit" value="Save Changes" class="btn btn-primary">
+                <a href="{% url 'tasks' %}" class="btn btn-secondary">Cancel</a>
             </form>
         </div>
-        <div style="border: solid 2px red;" class="col">
+        <div class="col">
+            <div class="card-body">
 
+            </div>
         </div>
     </div>
     
