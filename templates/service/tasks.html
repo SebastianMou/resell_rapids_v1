@@ -47,13 +47,26 @@
                     <button class="btn btn-info btn-sm">Long Break</button> -->
                     <h1 id="timer" style="color: rgba(255, 0, 0, 0.589);">25:00</h1>
                     <div class="d-flex">
-                        <audio id="clickSound" src="{% static 'audio/button-click.mp3' %}" preload="auto"></audio>
+                        <audio id="start_button_click" src="{% static 'audio/start-button-click.mp3' %}" preload="auto"></audio>
+                        <button id="start_button" onclick="startCountdown()" class="btn btn-success form-control">Start</button>
 
-                        <button onclick="startCountdown()" class="btn btn-success form-control">Start</button>
                         <audio id="clickSound" src="{% static 'audio/button-click.mp3' %}" preload="auto"></audio>
                         <button id="toggleButton" onclick="pauseCountdown()" class="btn btn-danger form-control">Pause</button>
+
+
                         <audio id="bellSound" src="{% static 'audio/bell-ring.mp3' %}"></audio>
                     </div>
+                    <div class="card">
+                        <div class="card-body">
+                            <h6 class="card-title">Pure 40 HZ Binural Beats</h6>
+                            <audio controls class="w-100">
+                                <source src="{% static 'audio/Pure_40_HZ_Binural_Beats.mp3' %}" type="audio/mpeg">
+                            </audio>
+                        </div>
+                    </div>
+                    
+                    
+                    
                 </div>
             </div>
 
@@ -278,6 +291,8 @@
     }
 
     function startCountdown() {
+
+        startButton();
         // If timer is paused, resume it
         if (isPaused) {
             isPaused = false;
@@ -324,7 +339,15 @@
     }
 
     function startButton() {
-        
+        var sound = document.getElementById("start_button_click");
+        var button = document.getElementById("start_button");
+        sound.play();
+
+        if (button.innerHTML === "Start") {
+            button.innerHTML = "Started";
+        } else {
+            button.innerHTML = 'Start';
+        }
     }
 </script>
 
