@@ -1,0 +1,28 @@
+{% extends '../base.html' %}
+{% load static %}
+
+{% block content %}
+<style>
+    .full_page {
+        height: 100vh;
+    }
+</style>
+<div class="container-fluid full_page">
+    <h1>Amazon Search</h1>
+    <form action="{% url 'search_amazon' %}" method="get">
+      <input type="text" name="query" placeholder="Enter search query" required>
+      <button type="submit">Search</button>
+    </form>
+  
+    {% if results %}
+    <h2>Search Results:</h2>
+    <ul>
+      {% for item in results %}
+        <li>
+          <a href="{{ item.link }}" target="_blank">{{ item.title }}</a>
+        </li>
+      {% endfor %}
+    </ul>
+    {% endif %}
+</div>
+{% endblock %}

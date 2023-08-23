@@ -12,6 +12,8 @@ from django.contrib.sites.shortcuts import get_current_site
 from django.core.mail import EmailMessage
 from .tokens import account_activation_token
 from django.http import HttpResponse
+from django.http import JsonResponse
+from playwright.sync_api import sync_playwright
 
 from .forms import UserRegisterForm, UserUpdateForm, TaskForm
 from .models import Task
@@ -171,6 +173,45 @@ async def a_analytics(request):
         # product_names = await page.eval_on_selector_all('.a-link-normal .p13n-sc-truncated', 'elements => elements.map(e => e.textContent.trim())')
         await browser.close()
     return await sync_to_async(render)(request, 'a_analytics.html', context)
+
+@login_required
+def amazon_product_spider(request):
+    return render(request, 'spiders/amazon_product_spider.html')
+
+def search_amazon(request):
+    query = request.GET.get('query', '')
+
+    with sync_playwright() as p:
+        # Set up the browser with Brightdata proxy
+        browser = p.chromium.launch(
+            proxy={
+                'server': f'',
+                'bypass': '<-loopback>'
+            }
+        )
+        
+        page = browser.new_page()
+        
+        # Navigate to Amazon and search for the query
+        page.goto('https://www.amazon.com/')
+        page.fill('input[name="field-keywords"]', query)
+        page.click('input[type="submit"]')
+        
+        # Extract the search results
+        items = page.query_selector_all('.s-result-item')
+        results = []
+        for item in items:
+            title = item.text_content('.a-text-normal')
+            link = item.get_attribute('href')
+            if title and link:
+                results.append({
+                    'title': title,
+                    'link': 'https://www.amazon.com' + link
+                })
+        
+        browser.close()
+        
+        return JsonResponse(results, safe=False)
 
 @login_required
 def profile(request):

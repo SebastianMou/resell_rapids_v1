@@ -22,6 +22,9 @@ urlpatterns = [
     path('settings/', views.settings, name='settings'),
     path('terms_of_service/', views.terms_of_service, name='terms_of_service'),
     path('email_service/', views.email_service, name='email_service'),
+    path('amazon_product_spider/', views.amazon_product_spider, name='amazon_product_spider'),
+    path('search_amazon/', views.search_amazon, name='search_amazon'),
+
     
     path('a_analytics/', views.a_analytics, name='a_analytics'),
     path('tables/', views.tables, name='tables'),
