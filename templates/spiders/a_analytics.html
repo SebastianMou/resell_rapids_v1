@@ -1,0 +1,29 @@
+{% extends '../base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="container-fluid">
+    <h1 class="h3 mb-2 text-gray-800">Amazon Analytics</h1>
+    
+    <!-- Display the count of products -->
+    <p>Total products: {{ product_names|length }}</p>
+
+    <table class="table table-bordered">
+        <thead>
+            <tr>
+                <th>#</th>
+                <th>Product Name</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for product in product_names %}
+                <tr>
+                    <td>{{ forloop.counter }}</td>
+                    <td>{{ product }}</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+{% endblock %}

@@ -72,4 +72,5 @@ class TaskForm(forms.ModelForm):
             })
         }
 
-
+class ProductSearchForm(forms.Form):
+    query = forms.CharField(label='Search for a product on Amazon')

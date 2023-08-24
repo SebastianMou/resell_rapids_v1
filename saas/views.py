@@ -15,8 +15,8 @@ from django.http import HttpResponse
 from django.http import JsonResponse
 from playwright.sync_api import sync_playwright
 
-from .forms import UserRegisterForm, UserUpdateForm, TaskForm
-from .models import Task
+from .forms import UserRegisterForm, UserUpdateForm, TaskForm, ProductSearchForm
+from .models import Task, Product
 
 # Create your views here.
 auth = ''
@@ -172,46 +172,45 @@ async def a_analytics(request):
         }
         # product_names = await page.eval_on_selector_all('.a-link-normal .p13n-sc-truncated', 'elements => elements.map(e => e.textContent.trim())')
         await browser.close()
-    return await sync_to_async(render)(request, 'a_analytics.html', context)
+    return await sync_to_async(render)(request, 'spiders/a_analytics.html', context)
 
-@login_required
-def amazon_product_spider(request):
-    return render(request, 'spiders/amazon_product_spider.html')
-
-def search_amazon(request):
-    query = request.GET.get('query', '')
-
+def scrape_amazon_product(query):
     with sync_playwright() as p:
-        # Set up the browser with Brightdata proxy
-        browser = p.chromium.launch(
-            proxy={
-                'server': f'',
-                'bypass': '<-loopback>'
-            }
-        )
-        
+        # Use Brightdata's scraping_browser here
+        browser = p.chromium.launch()
         page = browser.new_page()
-        
-        # Navigate to Amazon and search for the query
+
+        # Navigate to Amazon and search for the product
         page.goto('https://www.amazon.com/')
         page.fill('input[name="field-keywords"]', query)
         page.click('input[type="submit"]')
-        
-        # Extract the search results
-        items = page.query_selector_all('.s-result-item')
-        results = []
-        for item in items:
-            title = item.text_content('.a-text-normal')
-            link = item.get_attribute('href')
-            if title and link:
-                results.append({
-                    'title': title,
-                    'link': 'https://www.amazon.com' + link
-                })
-        
+
+        # Extract product details (you might need to adjust selectors)
+        product_title = page.text_content('span.a-text-normal')
+        product_price = page.text_content('span.a-price-whole')
+        product_image_url = page.get_attribute('img.s-image', 'src')
+        product_url = page.url
+
         browser.close()
-        
-        return JsonResponse(results, safe=False)
+
+        return {
+            'title': product_title,
+            'price': float(product_price.replace(',', '')),
+            'image_url': product_image_url,
+            'product_url': product_url
+        }
+
+@login_required
+def search_product(request):
+    if request.method == 'POST':
+        form = ProductSearchForm(request.POST)
+        if form.is_valid():
+            data = scrape_amazon_product(form.cleaned_data['query'])
+            product = Product.objects.create(**data)
+            return render(request, 'spiders/product_detail.html', {'product': product})
+    else:
+        form = ProductSearchForm()
+    return render(request, 'spiders/search_product.html', {'form': form})
 
 @login_required
 def profile(request):

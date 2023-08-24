@@ -1,0 +1,18 @@
+{% extends "../base.html" %}
+
+{% block content %}
+<style>
+    .full-height {
+        height: 100vh;
+    }
+</style>
+<div class="container-fluid full-height">
+    <h1>Product Details</h1>
+    <div>
+      <h2>{{ product.title }}</h2>
+      <img src="{{ product.image_url }}" alt="{{ product.title }}" width="200">
+      <p>Price: ${{ product.price }}</p>
+      <a href="{{ product.product_url }}" target="_blank">View on Amazon</a>
+    </div>
+</div>
+{% endblock %}

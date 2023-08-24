@@ -1,0 +1,17 @@
+{% extends '../base.html' %}
+
+{% block content %}
+<style>
+    .full-height {
+        height: 100vh;
+    }
+</style>
+<div class="container-fluid full-height">
+    <h1>Search for a Product on Amazon</h1>
+    <form method="post">
+      {% csrf_token %}
+      {{ form.as_p }}
+      <button type="submit">Search</button>
+    </form>
+</div>
+{% endblock %}
