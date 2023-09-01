@@ -1,5 +1,5 @@
 {% extends "../base.html" %}
-
+{% load static %}
 {% block content %}
 <style>
     .full-height {
@@ -8,11 +8,29 @@
 </style>
 <div class="container-fluid full-height">
     <h1>Product Details</h1>
-    <div>
-      <h2>{{ product.title }}</h2>
-      <img src="{{ product.image_url }}" alt="{{ product.title }}" width="200">
-      <p>Price: ${{ product.price }}</p>
-      <a href="{{ product.product_url }}" target="_blank">View on Amazon</a>
+    <p>product count: {{ products|length }}</p>
+    <div class="mt-5">
+        <h1>Amazon Products</h1>
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th scope="col">Image</th>
+                    <th scope="col">Title</th>
+                    <th scope="col">Price</th>
+                    <th scope="col">Link</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for product in products %}
+                    <tr>
+                        <td><img src="{{ product.image_url }}" alt="{{ product.title }}" style="width: 100px;"></td>
+                        <td>{{ product.title }}</td>
+                        <td>${{ product.price }}</td>
+                        <td><a href="{{ product.product_url }}" target="_blank" class="btn btn-primary">View on Amazon</a></td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
     </div>
 </div>
 {% endblock %}

@@ -168,7 +168,7 @@ async def a_analytics(request):
         print('done, evaluating')
         # Extract product names
         context = {
-            'product_names': await page.eval_on_selector_all('.a-link-normal .p13n-sc-truncated', 'elements => elements.map(e => e.textContent.trim())')
+            'product_names': await page.eval_on_selector_all('.a-link-normal .p13n-sc-truncated', 'elements => elements.map(e => e.textContent.trim())'),
         }
         # product_names = await page.eval_on_selector_all('.a-link-normal .p13n-sc-truncated', 'elements => elements.map(e => e.textContent.trim())')
         await browser.close()
@@ -176,7 +176,6 @@ async def a_analytics(request):
 
 def scrape_amazon_product(query):
     with sync_playwright() as p:
-        # Use Brightdata's scraping_browser here
         browser = p.chromium.launch()
         page = browser.new_page()
 
@@ -185,29 +184,40 @@ def scrape_amazon_product(query):
         page.fill('input[name="field-keywords"]', query)
         page.click('input[type="submit"]')
 
-        # Extract product details (you might need to adjust selectors)
-        product_title = page.text_content('span.a-text-normal')
-        product_price = page.text_content('span.a-price-whole')
-        product_image_url = page.get_attribute('img.s-image', 'src')
-        product_url = page.url
+        # Wait for the results to load
+        page.wait_for_selector('span.a-text-normal')
+
+        # Extract details for all products
+        products_data = page.eval_on_selector_all('.s-result-item', '''elements => {
+            return elements.map(element => {
+                let title = element.querySelector('span.a-text-normal')?.textContent.trim();
+                let price = element.querySelector('span.a-price-whole')?.textContent.trim();
+                let imageUrl = element.querySelector('img.s-image')?.getAttribute('src');
+                let productUrl = element.querySelector('a.a-link-normal.a-text-normal')?.getAttribute('href');
+
+                return {
+                    title: title,
+                    price: price ? parseFloat(price.replace(',', '')) : null,
+                    image_url: imageUrl,
+                    product_url: productUrl ? `https://www.amazon.com${productUrl}` : null
+                };
+            });
+        }''')
 
         browser.close()
 
-        return {
-            'title': product_title,
-            'price': float(product_price.replace(',', '')),
-            'image_url': product_image_url,
-            'product_url': product_url
-        }
+        return products_data
 
 @login_required
 def search_product(request):
     if request.method == 'POST':
         form = ProductSearchForm(request.POST)
         if form.is_valid():
-            data = scrape_amazon_product(form.cleaned_data['query'])
-            product = Product.objects.create(**data)
-            return render(request, 'spiders/product_detail.html', {'product': product})
+            products_data = scrape_amazon_product(form.cleaned_data['query'])
+            # Filter out products without a price
+            products_data = [data for data in products_data if data['price'] is not None]
+            products = [Product.objects.create(**data) for data in products_data]
+            return render(request, 'spiders/product_detail.html', {'products': products})
     else:
         form = ProductSearchForm()
     return render(request, 'spiders/search_product.html', {'form': form})
