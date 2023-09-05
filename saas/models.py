@@ -18,10 +18,22 @@ class Task(models.Model):
     owner = models.ForeignKey(User, on_delete=models.CASCADE, related_name='tasks')
 
     def __str__(self):
-        return self.title
+        return str(self.title) + ' - ' + str(self.owner)
     
 class Product(models.Model):
     title = models.CharField(max_length=255)
     price = models.DecimalField(max_digits=10, decimal_places=2)
+    star_rating = models.CharField(max_length=50, null=True, blank=True)
+    review_count = models.CharField(max_length=50, null=True, blank=True)
     image_url = models.URLField()
     product_url = models.URLField()
+
+    def __str__(self):
+        return self.title
+
+class AliexpressProduct(models.Model):
+    title = models.CharField(max_length=255)
+    price = models.DecimalField(max_digits=10, decimal_places=2)
+
+    def __str__(self):
+        return self.title

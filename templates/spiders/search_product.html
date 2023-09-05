@@ -5,13 +5,19 @@
     .full-height {
         height: 100vh;
     }
+    .search_query {
+        width: 75vh;
+        border-radius: 50px;
+    }
 </style>
 <div class="container-fluid full-height">
     <h1>Search for a Product on Amazon</h1>
     <form method="post">
-      {% csrf_token %}
-      {{ form.as_p }}
-      <button type="submit">Search</button>
+        {% csrf_token %}
+        <div class="d-flex">
+            {{ form.query }}
+            <button style="border-radius: 50px; background-color: #6A0DAD;" class="btn btn-primary" type="submit">Search</button>
+        </div>
     </form>
 </div>
 {% endblock %}

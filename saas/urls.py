@@ -38,4 +38,7 @@ urlpatterns = [
     # activación de la cuenta de usuario por correo electrónico
     path('activate/<uidb64>/<token>/', views.activate, name='activate'),
     path('sending_activate_token/', views.sending_activate_token, name='sending_activate_token'), 
+
+    path('test_decor_page/', views.test_decor_page, name='test_decor_page'),
+
 ]

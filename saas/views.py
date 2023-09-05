@@ -16,7 +16,7 @@ from django.http import JsonResponse
 from playwright.sync_api import sync_playwright
 
 from .forms import UserRegisterForm, UserUpdateForm, TaskForm, ProductSearchForm
-from .models import Task, Product
+from .models import Task, Product, AliexpressProduct
 
 # Create your views here.
 auth = ''
@@ -176,7 +176,9 @@ async def a_analytics(request):
 
 def scrape_amazon_product(query):
     with sync_playwright() as p:
-        browser = p.chromium.launch()
+        browser = p.chromium.launch(headless=False)
+        # browser = p.chromium.launch()
+
         page = browser.new_page()
 
         # Navigate to Amazon and search for the product
@@ -185,7 +187,8 @@ def scrape_amazon_product(query):
         page.click('input[type="submit"]')
 
         # Wait for the results to load
-        page.wait_for_selector('span.a-text-normal')
+        page.wait_for_selector('span.a-text-normal', timeout=60000)
+        # page.wait_for_selector('span.a-text-normal')
 
         # Extract details for all products
         products_data = page.eval_on_selector_all('.s-result-item', '''elements => {
@@ -193,12 +196,23 @@ def scrape_amazon_product(query):
                 let title = element.querySelector('span.a-text-normal')?.textContent.trim();
                 let price = element.querySelector('span.a-price-whole')?.textContent.trim();
                 let imageUrl = element.querySelector('img.s-image')?.getAttribute('src');
+                
+                // Extract star ratings
+                let starRatingElement = element.querySelector('span.a-icon-alt');
+                let starRating = starRatingElement ? starRatingElement.textContent.trim() : null;
+                
+                // Extract number of reviews
+                let reviewCountElement = element.querySelector('span[aria-label] > span.a-size-base.s-underline-text');
+                let reviewCount = reviewCountElement ? reviewCountElement.textContent.trim().replace('(', '').replace(')', '').replace('K+', '000') : null;
+                
                 let productUrl = element.querySelector('a.a-link-normal.a-text-normal')?.getAttribute('href');
 
                 return {
                     title: title,
                     price: price ? parseFloat(price.replace(',', '')) : null,
                     image_url: imageUrl,
+                    star_rating: starRating,
+                    review_count: reviewCount,
                     product_url: productUrl ? `https://www.amazon.com${productUrl}` : null
                 };
             });
@@ -208,16 +222,93 @@ def scrape_amazon_product(query):
 
         return products_data
 
+def scrape_aliexpress_product(query):
+    with sync_playwright() as p:
+        browser = p.chromium.launch(headless=False)
+        page = browser.new_page()
+
+        # Navigate to AliExpress and search for the product
+        page.goto('https://www.aliexpress.com/')
+        page.fill('input[name="SearchText"]', query)
+        page.click('input[type="submit"]')
+
+        # # Check for the age confirmation popup and dismiss it
+        # age_popup_selector = 'SELECTOR_FOR_THE_POPUP'  # Replace with the actual selector for the popup
+        # yes_button_selector = 'SELECTOR_FOR_YES_BUTTON'  # Replace with the actual selector for the "Yes" button
+        
+        # if page.is_visible(age_popup_selector, timeout=5000):  # Wait for 5 seconds to check for the popup
+        #     page.click(yes_button_selector)
+
+        # Wait for the results to load
+        page.wait_for_selector('h1.manhattan--titleText--WccSjUS', timeout=120000)
+
+        # Extract details for all products (you'll need to adjust the selectors based on AliExpress's structure)
+        products_data = page.eval_on_selector_all('.list-item', '''elements => {
+            return elements.map(element => {
+                let titleElement = element.querySelector('h1.manhattan--titleText--WccSjUS');
+                let title = titleElement ? titleElement.textContent.trim() : null;
+
+                                                  
+                // Extracting price
+                let priceSymbolElement = element.querySelector('div.manhattan--price-sale--1CCSZfK span:nth-child(1)');
+                let priceMainElement = element.querySelector('div.manhattan--price-sale--1CCSZfK span:nth-child(2)');
+                let priceDecimalElement = element.querySelector('div.manhattan--price-sale--1CCSZfK span:nth-child(4)');
+                
+                let priceSymbol = priceSymbolElement ? priceSymbolElement.textContent.trim() : '';
+                let priceMain = priceMainElement ? priceMainElement.textContent.trim() : '';
+                let priceDecimal = priceDecimalElement ? priceDecimalElement.textContent.trim() : '';
+                
+                let price = priceSymbol + priceMain + (priceDecimal ? ',' + priceDecimal : '');
+
+                return {
+                    title: title,
+                    price: price,
+
+                };
+            });
+        }''')
+
+
+        browser.close()
+
+        return products_data
+
+# @login_required
+# def search_product(request):
+#     if request.method == 'POST':
+#         form = ProductSearchForm(request.POST)
+#         if form.is_valid():
+#             products_data = scrape_amazon_product(form.cleaned_data['query'])
+#             # Filter out products without a price
+#             products_data = [data for data in products_data if data['price'] is not None]
+#             products = [Product.objects.create(**data) for data in products_data]
+#             return render(request, 'spiders/product_detail.html', {'products': products})
+#     else:
+#         form = ProductSearchForm()
+#     return render(request, 'spiders/search_product.html', {'form': form})
+
 @login_required
 def search_product(request):
     if request.method == 'POST':
         form = ProductSearchForm(request.POST)
         if form.is_valid():
-            products_data = scrape_amazon_product(form.cleaned_data['query'])
-            # Filter out products without a price
-            products_data = [data for data in products_data if data['price'] is not None]
-            products = [Product.objects.create(**data) for data in products_data]
-            return render(request, 'spiders/product_detail.html', {'products': products})
+            amazon_products = scrape_amazon_product(form.cleaned_data['query'])
+            aliexpress_products = scrape_aliexpress_product(form.cleaned_data['query'])
+
+            # Print the scraped AliExpress products
+            print("AliExpress Products:", aliexpress_products)
+
+            # Filter out products without a price (for both Amazon and AliExpress)
+            amazon_products = [data for data in amazon_products if data['price'] is not None]
+            aliexpress_products = [data for data in aliexpress_products if data['price'] is not None]
+
+            amazon_db_products = [Product.objects.create(**data) for data in amazon_products]
+            aliexpress_db_products = [AliexpressProduct.objects.create(**data) for data in aliexpress_products]
+
+            return render(request, 'spiders/product_detail.html', {
+                'amazon_products': amazon_db_products,
+                'aliexpress_products': aliexpress_db_products
+            })
     else:
         form = ProductSearchForm()
     return render(request, 'spiders/search_product.html', {'form': form})
@@ -354,3 +445,6 @@ def terms_of_service(request):
 
 def email_service(request):
     return render(request, 'autho/email_service.html')
+
+def test_decor_page(request):
+    return render(request, 'test_decor_page.html')

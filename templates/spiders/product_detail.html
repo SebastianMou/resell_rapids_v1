@@ -1,14 +1,95 @@
 {% extends "../base.html" %}
 {% load static %}
 {% block content %}
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.0/dist/css/bootstrap.min.css" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.0/dist/js/bootstrap.bundle.min.js"></script>
 <style>
     .full-height {
         height: 100vh;
     }
+    .google-link {
+        display: block;
+        margin-top: 10px;
+        width: 200px;
+    }
+    .offcanvas-right {
+        transform: translateX(100%);
+    }
+
+    .custom-width {
+        width: 380px;
+        /* Set your desired width here */
+    }
+
+    .output {
+        grid-column: 1 / -1;
+        /* background-color: rgba(0, 0, 0, 0.626); */
+        display: flex;
+        align-items: flex-end;
+        justify-content: space-around;
+        flex-direction: column;
+        padding: 10px;
+        word-wrap: break-word;
+        word-break: break-all;
+        min-height: 110px;
+    }
+
+    .output .previous-operand {
+        color: gray;
+        font-size: 1.5rem;
+    }
+
+    .output .current-operand {
+        color: white;
+        font-size: 2.5rem;
+    }
+
+    .calculator-keys {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        grid-gap: 20px;
+        padding: 20px;
+    }
+
+    .calculator-keys>button {
+        height: 40px;
+        width: auto;
+        font-size: 18px;
+    }
+
+    .span-two.buttonClass {
+        grid-column: span 2;
+    }
+
+    .buttonClass {
+        font-size: 26px;
+        font-family: Arial;
+        width: 65px;
+        height: 59px;
+        border-width: 1px;
+        color: #fff;
+        border-color: #0c62e496;
+        border-top-left-radius: 28px;
+        border-top-right-radius: 28px;
+        border-bottom-left-radius: 28px;
+        border-bottom-right-radius: 28px;
+        text-shadow: 1px 1px 0px #0c62e496;
+        background: #0c64e4;
+    }
+    .buttonClass:hover {
+        background: #073b8ae3
+    }
+    .input-group {
+        margin-bottom: 10px;
+    }
+    label {
+        display: block;
+        margin-bottom: 5px;
+    }
 </style>
 <div class="container-fluid full-height">
-    <h1>Product Details</h1>
-    <p>product count: {{ products|length }}</p>
+    <h1>scraped products</h1>
+    <!-- <p>product count: {{ products|length }}</p>
     <div class="mt-5">
         <h1>Amazon Products</h1>
         <table class="table table-striped">
@@ -17,20 +98,239 @@
                     <th scope="col">Image</th>
                     <th scope="col">Title</th>
                     <th scope="col">Price</th>
-                    <th scope="col">Link</th>
+                    <th scope="col">Star Rating</th>
+                    <th scope="col">Review Count</th>
                 </tr>
             </thead>
             <tbody>
                 {% for product in products %}
                     <tr>
                         <td><img src="{{ product.image_url }}" alt="{{ product.title }}" style="width: 100px;"></td>
-                        <td>{{ product.title }}</td>
+                        <td>
+                            <a href="{{ product.product_url }}" target="_blank">{{ product.title }}</a>
+                            <a href="https://www.google.com.mx/search?q={{ product.title }}" target="_blank" class="google-link btn btn-light btn-sm">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-google" viewBox="0 0 16 16">
+                                    <path d="M15.545 6.558a9.42 9.42 0 0 1 .139 1.626c0 2.434-.87 4.492-2.384 5.885h.002C11.978 15.292 10.158 16 8 16A8 8 0 1 1 8 0a7.689 7.689 0 0 1 5.352 2.082l-2.284 2.284A4.347 4.347 0 0 0 8 3.166c-2.087 0-3.86 1.408-4.492 3.304a4.792 4.792 0 0 0 0 3.063h.003c.635 1.893 2.405 3.301 4.492 3.301 1.078 0 2.004-.276 2.722-.764h-.003a3.702 3.702 0 0 0 1.599-2.431H8v-3.08h7.545z"/>
+                                  </svg> Find on Google
+                            </a>
+                        </td>
                         <td>${{ product.price }}</td>
-                        <td><a href="{{ product.product_url }}" target="_blank" class="btn btn-primary">View on Amazon</a></td>
+                        <td>{{ product.star_rating }}</td>
+                        <td>{{ product.review_count }}</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div> -->
+
+    <div class="mt-5">
+        <h1 style="color: gray;">Amazon Products</h1>
+        <table class="table table-striped">
+            <thead>
+                <tr style="color: gray;">
+                    <th scope="col">Image</th>
+                    <th scope="col">Title</th>
+                    <th scope="col">Price</th>
+                    <th scope="col">Star Rating</th>
+                    <th scope="col">Review Count</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for product in amazon_products %}
+                    <tr style="color: gray;">
+                        <td><img src="{{ product.image_url }}" alt="{{ product.title }}" style="width: 100px;"></td>
+                        <td>
+                            <a href="{{ product.product_url }}" target="_blank">{{ product.title }}</a>
+                            <a href="https://www.google.com.mx/search?q={{ product.title }}" target="_blank" class="google-link btn btn-light btn-sm">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-google" viewBox="0 0 16 16">
+                                    <path d="M15.545 6.558a9.42 9.42 0 0 1 .139 1.626c0 2.434-.87 4.492-2.384 5.885h.002C11.978 15.292 10.158 16 8 16A8 8 0 1 1 8 0a7.689 7.689 0 0 1 5.352 2.082l-2.284 2.284A4.347 4.347 0 0 0 8 3.166c-2.087 0-3.86 1.408-4.492 3.304a4.792 4.792 0 0 0 0 3.063h.003c.635 1.893 2.405 3.301 4.492 3.301 1.078 0 2.004-.276 2.722-.764h-.003a3.702 3.702 0 0 0 1.599-2.431H8v-3.08h7.545z"/>
+                                  </svg> Find on Google
+                            </a>
+                        </td>
+                        <td>${{ product.price }}</td>
+                        <td>{{ product.star_rating }}</td>
+                        <td>{{ product.review_count }}</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    <div class="mt-5">
+        <h1 style="color: gray;">Aliexpress Products</h1>
+        <table class="table table-striped">
+            <thead>
+                <tr style="color: gray;">
+                    <th scope="col">Image</th>
+                    <th scope="col">Title</th>
+                    <th scope="col">Price</th>
+                    <th scope="col">Star Rating</th>
+                    <th scope="col">Review Count</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for product in aliexpress_products %}
+                    <tr style="color: gray;">
+                        <td><img src="{{ product.image_url }}" alt="{{ product.title }}" style="width: 100px;"></td>
+                        <td>
+                            <a href="{{ product.product_url }}" target="_blank">{{ product.title }}</a>
+                            <a href="https://www.google.com.mx/search?q={{ product.title }}" target="_blank" class="google-link btn btn-light btn-sm">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-google" viewBox="0 0 16 16">
+                                    <path d="M15.545 6.558a9.42 9.42 0 0 1 .139 1.626c0 2.434-.87 4.492-2.384 5.885h.002C11.978 15.292 10.158 16 8 16A8 8 0 1 1 8 0a7.689 7.689 0 0 1 5.352 2.082l-2.284 2.284A4.347 4.347 0 0 0 8 3.166c-2.087 0-3.86 1.408-4.492 3.304a4.792 4.792 0 0 0 0 3.063h.003c.635 1.893 2.405 3.301 4.492 3.301 1.078 0 2.004-.276 2.722-.764h-.003a3.702 3.702 0 0 0 1.599-2.431H8v-3.08h7.545z"/>
+                                  </svg> Find on Google
+                            </a>
+                        </td>
+                        <td>${{ product.price }}</td>
+                        <td>{{ product.star_rating }}</td>
+                        <td>{{ product.review_count }}</td>
                     </tr>
                 {% endfor %}
             </tbody>
         </table>
     </div>
 </div>
+
+<style>
+    .mb-5 {
+        margin-bottom: 4rem !important; /* This is equivalent to 80px */
+    }
+    #transparent-btn {
+        opacity: 0.7;
+    }
+
+</style>
+<button class="btn btn-secondary position-fixed bottom-0 end-0 mb-5 me-3" id="transparent-btn" type="button" data-bs-toggle="offcanvas" data-bs-target="#sidebarRight" aria-controls="sidebarRight">
+    <svg xmlns="http://www.w3.org/2000/svg" width="17" height="17" fill="currentColor" class="bi bi-caret-left" viewBox="0 0 16 16">
+        <path d="M10 12.796V3.204L4.519 8 10 12.796zm-.659.753-5.48-4.796a1 1 0 0 1 0-1.506l5.48-4.796A1 1 0 0 1 11 3.204v9.592a1 1 0 0 1-1.659.753z"/>
+      </svg>
+  </button>
+  
+<!-- Sidebar Content -->
+<div class="offcanvas offcanvas-end" tabindex="-1" id="sidebarRight" aria-labelledby="sidebarLabel">
+    <div class="offcanvas-header">
+    <h5 id="sidebarLabel">Right Sidebar</h5>
+    <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+    </div>
+    <div class="offcanvas-body">
+        <div class="mb-3">
+            <label for="productPrice" class="form-label">Product Price ($)</label>
+            <input type="number" class="form-control" id="productPrice" placeholder="Enter product price">
+        </div>
+
+        <div class="mb-3">
+            <label for="taxRate" class="form-label">Taxes including VAT (%)</label>
+            <input type="number" class="form-control" id="taxRate" placeholder="Enter tax rate">
+        </div>
+
+        <div class="mb-3">
+            <label for="productCost" class="form-label">Product Cost ($)</label>
+            <input type="number" class="form-control" id="productCost" placeholder="Enter product cost">
+        </div>
+
+        <div class="mb-3">
+            <label for="additionalUnitCost" class="form-label">Additional per Unit Cost ($)</label>
+            <input type="number" class="form-control" id="additionalUnitCost" placeholder="Enter additional unit cost">
+        </div>
+
+        <div class="mb-3">
+            <label for="additionalMonthlyCosts" class="form-label">Additional Monthly Costs ($)</label>
+            <input type="number" class="form-control" id="additionalMonthlyCosts" placeholder="Enter additional monthly costs">
+        </div>
+
+        <div class="mb-3">
+            <label for="estMonthlySales" class="form-label">Estimated Monthly Sales (units)</label>
+            <input type="number" class="form-control" id="estMonthlySales" placeholder="Enter estimated monthly sales">
+        </div>
+
+        <button class="btn btn-primary" onclick="calculate()">Calculate</button>
+
+        <div class="">
+            <h3>Results:</h3>
+            <table class="table table-bordered">
+                <tbody>
+                    <tr>
+                        <td>Total FBA Fee</td>
+                        <td>$<span id="totalFBAFee">0</span></td>
+                    </tr>
+                    <tr>
+                        <td>Profit per Unit</td>
+                        <td>$<span id="profitPerUnit">0</span></td>
+                    </tr>
+                    <tr>
+                        <td>Net Margin</td>
+                        <td><span id="netMargin">0</span>%</td>
+                    </tr>
+                    <tr>
+                        <td>ROI</td>
+                        <td><span id="roi">0</span>%</td>
+                    </tr>
+                    <tr>
+                        <td>Estimated Monthly Profit</td>
+                        <td>$<span id="estMonthlyProfit">0</span></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        <hr>
+        <div class="ccc" style="border: 2px solid black;">
+            <div class="output">
+                <div data-previous-operand class="previous"></div>
+                <div data-current-operand class="current-operand"></div>
+            </div>
+            <div class="calculator-keys">
+                <button class="buttonClass span-two" data-all-clear>AC</button>
+                <button class="buttonClass" data-delete>DEL</button>
+                <button class="buttonClass" data-operation>÷</button>
+                <button class="buttonClass" data-number>1</button>
+                <button class="buttonClass" data-number>2</button>
+                <button class="buttonClass" data-number>3</button>
+                <button class="buttonClass" data-operation>x</button>
+                <button class="buttonClass" data-number>4</button>
+                <button class="buttonClass" data-number>5</button>
+                <button class="buttonClass" data-number>6</button>
+                <button class="buttonClass" data-operation>+</button>
+                <button class="buttonClass" data-number>7</button>
+                <button class="buttonClass" data-number>8</button>
+                <button class="buttonClass" data-number>9</button>
+                <button class="buttonClass" data-operation>-</button>
+                <button class="buttonClass" data-number>.</button>
+                <button class="buttonClass" data-number>0</button>
+                <button class="buttonClass span-two" data-equals>=</button>
+            </div>                                
+        </div>
+        <br>
+        <small style="font-size: smaller;"><b style="color: red;">Advertencia:</b> Notas (Cualquier información introducida aquí no se guardará una vez que se actualice o reinicie la página)</small>
+        <textarea placeholder="Notas (La información aquí no se guarda tras refrescar la página)" id="" style="width: 348px;" rows="10"></textarea>
+    </div>
+</div>
+<script>
+    function calculate() {
+        const productPrice = parseFloat(document.getElementById('productPrice').value);
+        const taxRate = parseFloat(document.getElementById('taxRate').value) / 100;
+        const productCost = parseFloat(document.getElementById('productCost').value);
+        const additionalUnitCost = parseFloat(document.getElementById('additionalUnitCost').value);
+        const additionalMonthlyCosts = parseFloat(document.getElementById('additionalMonthlyCosts').value);
+        const estMonthlySales = parseFloat(document.getElementById('estMonthlySales').value);
+
+        const sellingPriceAfterTaxes = productPrice + (productPrice * taxRate);
+        const totalFBAFee = productCost + additionalUnitCost + additionalMonthlyCosts;
+        const profitPerUnit = sellingPriceAfterTaxes - totalFBAFee;
+        const netMargin = (profitPerUnit / sellingPriceAfterTaxes) * 100;
+        const roi = (profitPerUnit / totalFBAFee) * 100;
+        const estMonthlyProfit = profitPerUnit * estMonthlySales;
+
+        // Set values and colors
+        setValueAndColor('totalFBAFee', totalFBAFee);
+        setValueAndColor('profitPerUnit', profitPerUnit);
+        setValueAndColor('netMargin', netMargin);
+        setValueAndColor('roi', roi);
+        setValueAndColor('estMonthlyProfit', estMonthlyProfit);
+    }
+
+    function setValueAndColor(elementId, value) {
+        const element = document.getElementById(elementId);
+        element.textContent = value.toFixed(2);
+        element.className = value > 0 ? 'positive' : 'negative';
+    }
+</script>
 {% endblock %}

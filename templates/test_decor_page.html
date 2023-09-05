@@ -1,0 +1,458 @@
+{% extends './base.html' %}
+{% load static %}
+
+{% block content %}
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.0/dist/css/bootstrap.min.css" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.0/dist/js/bootstrap.bundle.min.js"></script>
+
+<style>
+    .google-link {
+        display: block;
+        margin-top: 10px;
+        width: 178px;
+        color: gray;
+    }
+
+    .offcanvas-right {
+        transform: translateX(100%);
+    }
+
+    .custom-width {
+        width: 380px;
+        /* Set your desired width here */
+    }
+
+    .output {
+        grid-column: 1 / -1;
+        background-color: rgba(0, 0, 0, 0.626);
+        display: flex;
+        align-items: flex-end;
+        justify-content: space-around;
+        flex-direction: column;
+        padding: 10px;
+        word-wrap: break-word;
+        word-break: break-all;
+        min-height: 110px;
+    }
+
+    .output .previous-operand {
+        color: gray;
+        font-size: 1.5rem;
+    }
+
+    .output .current-operand {
+        color: white;
+        font-size: 2.5rem;
+    }
+
+    .calculator-keys {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        grid-gap: 20px;
+        padding: 20px;
+    }
+
+    .calculator-keys>button {
+        height: 40px;
+        width: auto;
+        font-size: 18px;
+    }
+
+    .span-two.buttonClass {
+        grid-column: span 2;
+    }
+
+    .buttonClass {
+        font-size: 26px;
+        font-family: Arial;
+        width: 65px;
+        height: 59px;
+        border-width: 1px;
+        color: #fff;
+        border-color: #0c62e496;
+        border-top-left-radius: 28px;
+        border-top-right-radius: 28px;
+        border-bottom-left-radius: 28px;
+        border-bottom-right-radius: 28px;
+        text-shadow: 1px 1px 0px #0c62e496;
+        background: #0c64e4;
+
+    }
+
+    .buttonClass:hover {
+        background: #073b8ae3
+    }
+    .input-group {
+        margin-bottom: 10px;
+    }
+    label {
+        display: block;
+        margin-bottom: 5px;
+    }
+    .positive {
+        color: green;
+    }
+
+    .negative {
+        color: red;
+    }
+
+</style>
+<div class="container-fluid full-height">
+    <div class="mt-5">
+        <h1>Amazon Products</h1>
+        <a href="#" onclick="window.open('http://google.com'); setTimeout(function() { window.open('https://www.youtube.com/watch?v=Bogh6KfGW2I&ab_channel=DubstepWolfMixes'); }, 500);">Click to open Google and YouTube</a>
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th scope="col">Image</th>
+                    <th scope="col">Title</th>
+                    <th scope="col">Price</th>
+                    <th scope="col">Star Rating</th>
+                    <th scope="col">Review Count</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><img src="" alt="" style="width: 100px;"></td>
+                    <td>
+                        <a href="" target="_blank">Test loang ass title kadsfhadsfjhadsjfhaskjlfjlahjdhfjahjsdhajdfl</a>
+                        <a onclick="window.open('https://www.google.com'); window.open('http://yahoo.com');" target="_blank" class="google-link btn btn-light btn-sm">
+                            search
+                        </a>
+                    </td>
+                    <td>$asdfasdfsfsf</td>
+                    <td>asdfasdfsfsf</td>
+                    <td>asdfasdfsfsf</td>
+                </tr>
+                <tr>
+                    <td><img src="" alt="" style="width: 100px;"></td>
+                    <td><a href="{{ product.product_url }}" target="_blank">asdfasdfsfsf</a></td>
+                    <td>$asdfasdfsfsf</td>
+                    <td>asdfasdfsfsf</td>
+                    <td>asdfasdfsfsf</td>
+                </tr>
+                <tr>
+                    <td><img src="" alt="" style="width: 100px;"></td>
+                    <td><a href="{{ product.product_url }}" target="_blank">asdfasdfsfsf</a></td>
+                    <td>$asdfasdfsfsf</td>
+                    <td>asdfasdfsfsf</td>
+                    <td>asdfasdfsfsf</td>
+                </tr>
+                <tr>
+                    <td><img src="" alt="" style="width: 100px;"></td>
+                    <td><a href="{{ product.product_url }}" target="_blank">asdfasdfsfsf</a></td>
+                    <td>$asdfasdfsfsf</td>
+                    <td>asdfasdfsfsf</td>
+                    <td>asdfasdfsfsf</td>
+                </tr>
+                <tr>
+                    <td><img src="" alt="" style="width: 100px;"></td>
+                    <td><a href="{{ product.product_url }}" target="_blank">asdfasdfsfsf</a></td>
+                    <td>$asdfasdfsfsf</td>
+                    <td>asdfasdfsfsf</td>
+                    <td>asdfasdfsfsf</td>
+                </tr>
+                <tr>
+                    <td><img src="" alt="" style="width: 100px;"></td>
+                    <td><a href="{{ product.product_url }}" target="_blank">asdfasdfsfsf</a></td>
+                    <td>$asdfasdfsfsf</td>
+                    <td>asdfasdfsfsf</td>
+                    <td>asdfasdfsfsf</td>
+                </tr>
+                <tr>
+                    <td><img src="" alt="" style="width: 100px;"></td>
+                    <td><a href="{{ product.product_url }}" target="_blank">asdfasdfsfsf</a></td>
+                    <td>$asdfasdfsfsf</td>
+                    <td>asdfasdfsfsf</td>
+                    <td>asdfasdfsfsf</td>
+                </tr>
+                <tr>
+                    <td><img src="" alt="" style="width: 100px;"></td>
+                    <td><a href="{{ product.product_url }}" target="_blank">asdfasdfsfsf</a></td>
+                    <td>$asdfasdfsfsf</td>
+                    <td>asdfasdfsfsf</td>
+                    <td>asdfasdfsfsf</td>
+                </tr>
+                <tr>
+                    <td><img src="" alt="" style="width: 100px;"></td>
+                    <td><a href="{{ product.product_url }}" target="_blank">asdfasdfsfsf</a></td>
+                    <td>$asdfasdfsfsf</td>
+                    <td>asdfasdfsfsf</td>
+                    <td>asdfasdfsfsf</td>
+                </tr>
+                <tr>
+                    <td><img src="" alt="" style="width: 100px;"></td>
+                    <td><a href="{{ product.product_url }}" target="_blank">asdfasdfsfsf</a></td>
+                    <td>$asdfasdfsfsf</td>
+                    <td>asdfasdfsfsf</td>
+                    <td>asdfasdfsfsf</td>
+                </tr>
+                <tr>
+                    <td><img src="" alt="" style="width: 100px;"></td>
+                    <td><a href="{{ product.product_url }}" target="_blank">asdfasdfsfsf</a></td>
+                    <td>$asdfasdfsfsf</td>
+                    <td>asdfasdfsfsf</td>
+                    <td>asdfasdfsfsf</td>
+                </tr>
+                <tr>
+                    <td><img src="" alt="" style="width: 100px;"></td>
+                    <td><a href="{{ product.product_url }}" target="_blank">asdfasdfsfsf</a></td>
+                    <td>$asdfasdfsfsf</td>
+                    <td>asdfasdfsfsf</td>
+                    <td>asdfasdfsfsf</td>
+                </tr>
+                <tr>
+                    <td><img src="" alt="" style="width: 100px;"></td>
+                    <td><a href="{{ product.product_url }}" target="_blank">asdfasdfsfsf</a></td>
+                    <td>$asdfasdfsfsf</td>
+                    <td>asdfasdfsfsf</td>
+                    <td>asdfasdfsfsf</td>
+                </tr>
+                <tr>
+                    <td><img src="" alt="" style="width: 100px;"></td>
+                    <td><a href="{{ product.product_url }}" target="_blank">asdfasdfsfsf</a></td>
+                    <td>$asdfasdfsfsf</td>
+                    <td>asdfasdfsfsf</td>
+                    <td>asdfasdfsfsf</td>
+                </tr>
+                <tr>
+                    <td><img src="" alt="" style="width: 100px;"></td>
+                    <td><a href="{{ product.product_url }}" target="_blank">asdfasdfsfsf</a></td>
+                    <td>$asdfasdfsfsf</td>
+                    <td>asdfasdfsfsf</td>
+                    <td>asdfasdfsfsf</td>
+                </tr>
+                <tr>
+                    <td><img src="" alt="" style="width: 100px;"></td>
+                    <td><a href="{{ product.product_url }}" target="_blank">asdfasdfsfsf</a></td>
+                    <td>$asdfasdfsfsf</td>
+                    <td>asdfasdfsfsf</td>
+                    <td>asdfasdfsfsf</td>
+                </tr>
+                <tr>
+                    <td><img src="" alt="" style="width: 100px;"></td>
+                    <td><a href="{{ product.product_url }}" target="_blank">asdfasdfsfsf</a></td>
+                    <td>$asdfasdfsfsf</td>
+                    <td>asdfasdfsfsf</td>
+                    <td>asdfasdfsfsf</td>
+                </tr>
+                <tr>
+                    <td><img src="" alt="" style="width: 100px;"></td>
+                    <td><a href="{{ product.product_url }}" target="_blank">asdfasdfsfsf</a></td>
+                    <td>$asdfasdfsfsf</td>
+                    <td>asdfasdfsfsf</td>
+                    <td>asdfasdfsfsf</td>
+                </tr>
+                <tr>
+                    <td><img src="" alt="" style="width: 100px;"></td>
+                    <td><a href="{{ product.product_url }}" target="_blank">asdfasdfsfsf</a></td>
+                    <td>$asdfasdfsfsf</td>
+                    <td>asdfasdfsfsf</td>
+                    <td>asdfasdfsfsf</td>
+                </tr>
+                <tr>
+                    <td><img src="" alt="" style="width: 100px;"></td>
+                    <td><a href="{{ product.product_url }}" target="_blank">asdfasdfsfsf</a></td>
+                    <td>$asdfasdfsfsf</td>
+                    <td>asdfasdfsfsf</td>
+                    <td>asdfasdfsfsf</td>
+                </tr><tr>
+                    <td><img src="" alt="" style="width: 100px;"></td>
+                    <td><a href="{{ product.product_url }}" target="_blank">asdfasdfsfsf</a></td>
+                    <td>$asdfasdfsfsf</td>
+                    <td>asdfasdfsfsf</td>
+                    <td>asdfasdfsfsf</td>
+                </tr>
+                <tr>
+                    <td><img src="" alt="" style="width: 100px;"></td>
+                    <td><a href="{{ product.product_url }}" target="_blank">asdfasdfsfsf</a></td>
+                    <td>$asdfasdfsfsf</td>
+                    <td>asdfasdfsfsf</td>
+                    <td>asdfasdfsfsf</td>
+                </tr>
+                <tr>
+                    <td><img src="" alt="" style="width: 100px;"></td>
+                    <td><a href="{{ product.product_url }}" target="_blank">asdfasdfsfsf</a></td>
+                    <td>$asdfasdfsfsf</td>
+                    <td>asdfasdfsfsf</td>
+                    <td>asdfasdfsfsf</td>
+                </tr>
+                <tr>
+                    <td><img src="" alt="" style="width: 100px;"></td>
+                    <td><a href="{{ product.product_url }}" target="_blank">asdfasdfsfsf</a></td>
+                    <td>$asdfasdfsfsf</td>
+                    <td>asdfasdfsfsf</td>
+                    <td>asdfasdfsfsf</td>
+                </tr>
+                <tr>
+                    <td><img src="" alt="" style="width: 100px;"></td>
+                    <td><a href="{{ product.product_url }}" target="_blank">asdfasdfsfsf</a></td>
+                    <td>$asdfasdfsfsf</td>
+                    <td>asdfasdfsfsf</td>
+                    <td>asdfasdfsfsf</td>
+                </tr>
+                <tr>
+                    <td><img src="" alt="" style="width: 100px;"></td>
+                    <td><a href="{{ product.product_url }}" target="_blank">asdfasdfsfsf</a></td>
+                    <td>$asdfasdfsfsf</td>
+                    <td>asdfasdfsfsf</td>
+                    <td>asdfasdfsfsf</td>
+                </tr>
+                <tr>
+                    <td><img src="" alt="" style="width: 100px;"></td>
+                    <td><a href="{{ product.product_url }}" target="_blank">asdfasdfsfsf</a></td>
+                    <td>$asdfasdfsfsf</td>
+                    <td>asdfasdfsfsf</td>
+                    <td>asdfasdfsfsf</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<style>
+    .mb-5 {
+        margin-bottom: 4rem !important; /* This is equivalent to 80px */
+    }
+    #transparent-btn {
+        opacity: 0.7;
+    }
+
+</style>
+<button class="btn btn-secondary position-fixed bottom-0 end-0 mb-5 me-3" id="transparent-btn" type="button" data-bs-toggle="offcanvas" data-bs-target="#sidebarRight" aria-controls="sidebarRight">
+    <svg xmlns="http://www.w3.org/2000/svg" width="17" height="17" fill="currentColor" class="bi bi-caret-left" viewBox="0 0 16 16">
+        <path d="M10 12.796V3.204L4.519 8 10 12.796zm-.659.753-5.48-4.796a1 1 0 0 1 0-1.506l5.48-4.796A1 1 0 0 1 11 3.204v9.592a1 1 0 0 1-1.659.753z"/>
+      </svg>
+  </button>
+  
+<!-- Sidebar Content -->
+<div class="offcanvas offcanvas-end" tabindex="-1" id="sidebarRight" aria-labelledby="sidebarLabel">
+    <div class="offcanvas-header">
+    <h5 id="sidebarLabel">Right Sidebar</h5>
+    <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+    </div>
+    <div class="offcanvas-body">
+        <div class="mb-3">
+            <label for="productPrice" class="form-label">Product Price ($)</label>
+            <input type="number" class="form-control" id="productPrice" placeholder="Enter product price">
+        </div>
+
+        <div class="mb-3">
+            <label for="taxRate" class="form-label">Taxes including VAT (%)</label>
+            <input type="number" class="form-control" id="taxRate" placeholder="Enter tax rate">
+        </div>
+
+        <div class="mb-3">
+            <label for="productCost" class="form-label">Product Cost ($)</label>
+            <input type="number" class="form-control" id="productCost" placeholder="Enter product cost">
+        </div>
+
+        <div class="mb-3">
+            <label for="additionalUnitCost" class="form-label">Additional per Unit Cost ($)</label>
+            <input type="number" class="form-control" id="additionalUnitCost" placeholder="Enter additional unit cost">
+        </div>
+
+        <div class="mb-3">
+            <label for="additionalMonthlyCosts" class="form-label">Additional Monthly Costs ($)</label>
+            <input type="number" class="form-control" id="additionalMonthlyCosts" placeholder="Enter additional monthly costs">
+        </div>
+
+        <div class="mb-3">
+            <label for="estMonthlySales" class="form-label">Estimated Monthly Sales (units)</label>
+            <input type="number" class="form-control" id="estMonthlySales" placeholder="Enter estimated monthly sales">
+        </div>
+
+        <button class="btn btn-primary" onclick="calculate()">Calculate</button>
+
+        <div class="">
+            <h3>Results:</h3>
+            <table class="table table-bordered">
+                <tbody>
+                    <tr>
+                        <td>Total FBA Fee</td>
+                        <td>$<span id="totalFBAFee">0</span></td>
+                    </tr>
+                    <tr>
+                        <td>Profit per Unit</td>
+                        <td>$<span id="profitPerUnit">0</span></td>
+                    </tr>
+                    <tr>
+                        <td>Net Margin</td>
+                        <td><span id="netMargin">0</span>%</td>
+                    </tr>
+                    <tr>
+                        <td>ROI</td>
+                        <td><span id="roi">0</span>%</td>
+                    </tr>
+                    <tr>
+                        <td>Estimated Monthly Profit</td>
+                        <td>$<span id="estMonthlyProfit">0</span></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        <hr>
+        <div class="ccc" style="border: 2px solid black;">
+            <div class="output">
+                <div data-previous-operand class="previous"></div>
+                <div data-current-operand class="current-operand"></div>
+            </div>
+            <div class="calculator-keys">
+                <button class="buttonClass span-two" data-all-clear>AC</button>
+                <button class="buttonClass" data-delete>DEL</button>
+                <button class="buttonClass" data-operation>÷</button>
+                <button class="buttonClass" data-number>1</button>
+                <button class="buttonClass" data-number>2</button>
+                <button class="buttonClass" data-number>3</button>
+                <button class="buttonClass" data-operation>x</button>
+                <button class="buttonClass" data-number>4</button>
+                <button class="buttonClass" data-number>5</button>
+                <button class="buttonClass" data-number>6</button>
+                <button class="buttonClass" data-operation>+</button>
+                <button class="buttonClass" data-number>7</button>
+                <button class="buttonClass" data-number>8</button>
+                <button class="buttonClass" data-number>9</button>
+                <button class="buttonClass" data-operation>-</button>
+                <button class="buttonClass" data-number>.</button>
+                <button class="buttonClass" data-number>0</button>
+                <button class="buttonClass span-two" data-equals>=</button>
+            </div>                                
+        </div>
+        <br>
+        <small style="font-size: smaller;"><b style="color: red;">Advertencia:</b> Notas (Cualquier información introducida aquí no se guardará una vez que se actualice o reinicie la página)</small>
+        <textarea placeholder="Notas (La información aquí no se guarda tras refrescar la página)" id="" style="width: 348px;" rows="10"></textarea>
+    </div>
+</div>
+<script>
+    function calculate() {
+        const productPrice = parseFloat(document.getElementById('productPrice').value);
+        const taxRate = parseFloat(document.getElementById('taxRate').value) / 100;
+        const productCost = parseFloat(document.getElementById('productCost').value);
+        const additionalUnitCost = parseFloat(document.getElementById('additionalUnitCost').value);
+        const additionalMonthlyCosts = parseFloat(document.getElementById('additionalMonthlyCosts').value);
+        const estMonthlySales = parseFloat(document.getElementById('estMonthlySales').value);
+
+        const sellingPriceAfterTaxes = productPrice + (productPrice * taxRate);
+        const totalFBAFee = productCost + additionalUnitCost + additionalMonthlyCosts;
+        const profitPerUnit = sellingPriceAfterTaxes - totalFBAFee;
+        const netMargin = (profitPerUnit / sellingPriceAfterTaxes) * 100;
+        const roi = (profitPerUnit / totalFBAFee) * 100;
+        const estMonthlyProfit = profitPerUnit * estMonthlySales;
+
+        // Set values and colors
+        setValueAndColor('totalFBAFee', totalFBAFee);
+        setValueAndColor('profitPerUnit', profitPerUnit);
+        setValueAndColor('netMargin', netMargin);
+        setValueAndColor('roi', roi);
+        setValueAndColor('estMonthlyProfit', estMonthlyProfit);
+    }
+
+    function setValueAndColor(elementId, value) {
+        const element = document.getElementById(elementId);
+        element.textContent = value.toFixed(2);
+        element.className = value > 0 ? 'positive' : 'negative';
+    }
+</script>
+
+{% endblock %}

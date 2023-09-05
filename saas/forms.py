@@ -73,4 +73,7 @@ class TaskForm(forms.ModelForm):
         }
 
 class ProductSearchForm(forms.Form):
-    query = forms.CharField(label='Search for a product on Amazon')
+    query = forms.CharField(widget=forms.TextInput(attrs={
+        'class': 'form-control search_query', 
+        'placeholder': 'Search for a product on Amazon',
+    }))
