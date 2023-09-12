@@ -57,8 +57,20 @@ def home(request):
 
     return render(request, 'home.html', context)
 
+def index(request):
+    return render(request, 'index.html')
+
 def tables(request):
     return render(request, 'tables.html')
+
+def newsletter(request):
+    return render(request, 'adds/newsletter.html')
+
+def ai_gen(request):
+    return render(request, 'adds/ai_gen.html')
+
+def jo_cards(request):
+    return render(request, 'adds/jo_cards.html')
 
 def user_login(request):
     if request.method == 'POST':

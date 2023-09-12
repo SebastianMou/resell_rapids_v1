@@ -5,6 +5,7 @@ from . import views
 
 urlpatterns = [
     path('', views.home, name='home'),
+    path('index/', views.index, name='index'),
     path('login/', views.user_login, name='user_login'),
     path('login_with_email/', views.login_with_email, name='login_with_email'),
     path('logout/', views.user_logout, name='user_logout'),
@@ -18,6 +19,10 @@ urlpatterns = [
     path('create_task/', views.create_task, name='create_task'),
     path('delete_task/<int:pk>/', views.delete_task, name='delete_task'),
     path('edit_task/<int:pk>/', views.edit_task, name='edit_task'),
+
+    path('ai_gen/', views.ai_gen, name='ai_gen'),
+    path('newsletter/', views.newsletter, name='newsletter'),
+    path('jo_cards/', views.jo_cards, name='jo_cards'),
 
     path('settings/', views.settings, name='settings'),
     path('terms_of_service/', views.terms_of_service, name='terms_of_service'),
@@ -40,5 +45,4 @@ urlpatterns = [
     path('sending_activate_token/', views.sending_activate_token, name='sending_activate_token'), 
 
     path('test_decor_page/', views.test_decor_page, name='test_decor_page'),
-
 ]

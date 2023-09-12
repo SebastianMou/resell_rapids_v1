@@ -1,0 +1,36 @@
+{% extends '../base.html' %}
+{% load static %}
+
+{% block content %}
+<style>
+    .full-height {
+        height: 100vh;
+    }
+</style>
+<div class="container-fluid full-height">
+    <p>Aquí, me gustaría que crees una visualización con algunos de los campos de carga de Amazon. Además, por favor incluye una 
+        sección que muestre las salidas del IA. Esto ayudará a los usuarios a crear publicaciones en Amazon. Ejemplo:
+    </p>
+    <br>
+    <div class="row">
+        <div class="col">
+            <div class="card">
+                <div class="card-body">
+                    <label for="title">title</label>
+                    <input class="form-control" type="text">
+                </div>
+            </div>
+        </div>
+        <div class="col">
+            <div class="card">
+                <div class="card-body">
+                    <label for="title">title</label>
+                    <input class="form-control" type="text">
+                </div>
+            </div>
+        </div>
+    </div>
+    <button class="btn btn-danger" type="button">save</button>
+
+</div>
+{% endblock %}
